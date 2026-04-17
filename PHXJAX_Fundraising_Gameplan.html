@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHXJAX — Fundraising Gameplan</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f6f2;
+    --bg3: #f1efe8;
+    --text: #2c2c2a;
+    --text2: #5f5e5a;
+    --text3: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-mid: #7F77DD;
+    --purple-dark: #3C3489;
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --teal-mid: #1D9E75;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+    --amber-mid: #BA7517;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --blue-mid: #378ADD;
+    --coral: #993C1D;
+    --coral-light: #FAECE7;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18;
+      --bg2: #222220;
+      --bg3: #2a2a28;
+      --text: #e8e6de;
+      --text2: #b4b2a9;
+      --text3: #888780;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.2);
+      --purple-light: #26215C;
+      --teal-light: #04342C;
+      --amber-light: #412402;
+      --blue-light: #042C53;
+      --coral-light: #4A1B0C;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: var(--bg3); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+  /* ── Layout ── */
+  .shell { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+  .header { background: var(--purple); padding: 28px 32px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); margin-bottom: 28px; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .header h1 { font-size: 26px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .header .sub { font-size: 13px; color: #CECBF6; margin-top: 4px; }
+  .header-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .hstat { text-align: center; }
+  .hstat .hv { font-size: 22px; font-weight: 600; color: #fff; line-height: 1; }
+  .hstat .hl { font-size: 11px; color: #AFA9EC; margin-top: 3px; }
+  .hdiv { width: 1px; background: rgba(255,255,255,0.15); align-self: stretch; }
+
+  /* ── Nav ── */
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .nb { padding: 6px 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); font-size: 12px; font-weight: 500; cursor: pointer; background: var(--bg); color: var(--text2); transition: all .15s; white-space: nowrap; }
+  .nb:hover { background: var(--bg2); }
+  .nb.on { background: var(--bg2); color: var(--text); border-color: var(--text3); }
+
+  /* ── Page panels ── */
+  .pg { display: none; } .pg.on { display: block; }
+
+  /* ── Cards ── */
+  .card { background: var(--bg2); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+  .card.cl { cursor: pointer; transition: background .12s; } .card.cl:hover { background: var(--bg3); }
+  .card.ap { border-left: 3px solid var(--purple-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .card.at { border-left: 3px solid var(--teal-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .card.aa { border-left: 3px solid var(--amber-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .card.ab { border-left: 3px solid var(--blue-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .ct { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .cs { font-size: 12px; color: var(--text2); line-height: 1.55; }
+  .card-hint { font-size: 10px; color: var(--text3); margin-top: 6px; }
+
+  /* ── Grid ── */
+  .g2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 12px; }
+  .g4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 16px; }
+  @media(max-width:560px) { .g4 { grid-template-columns: repeat(2,1fr); } .g3 { grid-template-columns: repeat(2,1fr); } }
+  @media(max-width:400px) { .g2 { grid-template-columns: 1fr; } }
+
+  /* ── Stat boxes ── */
+  .db { background: var(--bg2); border-radius: var(--radius); padding: 12px 13px; }
+  .db .v { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
+  .db .l { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .kc .kv { font-size: 19px; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 2px; }
+  .kc .kl { font-size: 11px; color: var(--text3); }
+
+  /* ── Section labels ── */
+  .sl { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text3); margin: 18px 0 8px; }
+
+  /* ── Tags ── */
+  .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-top: 6px; flex-shrink: 0; }
+  .tp { background: var(--purple-light); color: var(--purple-dark); }
+  .tt { background: var(--teal-light); color: var(--teal); }
+  .ta { background: var(--amber-light); color: var(--amber); }
+  .tb { background: var(--blue-light); color: var(--blue); }
+  .tc { background: var(--coral-light); color: var(--coral); }
+
+  /* ── Phase tabs ── */
+  .ptabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .ptab { padding: 5px 12px; border-radius: var(--radius); border: 0.5px solid var(--border2); font-size: 12px; font-weight: 500; cursor: pointer; background: var(--bg); color: var(--text2); }
+  .ptab.on { background: var(--bg2); color: var(--text); border-color: var(--text3); }
+  .pp { display: none; } .pp.on { display: block; }
+  .ph { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+  .pbadge { min-width: 50px; text-align: center; padding: 9px 11px; border-radius: var(--radius-lg); border: 0.5px solid var(--border); flex-shrink: 0; }
+  .pbadge .d { font-size: 19px; font-weight: 600; line-height: 1; }
+  .pbadge .lb { font-size: 10px; margin-top: 2px; }
+  .pbar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+  .pf { height: 100%; border-radius: 2px; }
+
+  /* ── Steps ── */
+  .sr { display: flex; gap: 10px; margin-bottom: 6px; align-items: flex-start; }
+  .sn { width: 24px; height: 24px; border-radius: 50%; background: var(--bg2); border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text2); flex-shrink: 0; margin-top: 2px; }
+  .sl2 { width: 1px; height: 22px; background: var(--border); margin: 3px 0 3px 11px; }
+
+  /* ── LinkedIn posts ── */
+  .li { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; }
+  .li-hd { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .av { width: 38px; height: 38px; border-radius: 50%; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--purple-dark); flex-shrink: 0; }
+  .lnm { font-size: 13px; font-weight: 600; color: var(--text); }
+  .lmt { font-size: 11px; color: var(--text3); }
+  .lb2 { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-line; }
+  .lh { font-weight: 600; color: var(--purple); }
+  .lft { display: flex; gap: 16px; margin-top: 10px; padding-top: 8px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text3); }
+  .copy-btn { margin-left: auto; font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text2); cursor: pointer; }
+  .copy-btn:hover { background: var(--bg3); }
+
+  /* ── Email cards ── */
+  .email-card { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 12px; }
+  .em-meta { font-size: 12px; color: var(--text2); margin-bottom: 9px; line-height: 1.7; }
+  .em-meta strong { color: var(--text); }
+  .em-div { height: 0.5px; background: var(--border); margin-bottom: 10px; }
+  .em-body { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-line; }
+  .em-hl { background: var(--purple-light); border-radius: var(--radius); padding: 10px 13px; margin: 10px 0; font-size: 12px; color: var(--purple-dark); line-height: 1.6; }
+  .em-cta { border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 9px 13px; font-size: 13px; color: var(--blue); margin: 10px 0; }
+  .badge-day { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; margin-bottom: 10px; }
+
+  /* ── Timeline ── */
+  .tl-row { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+  .tl-year { min-width: 65px; font-size: 11px; font-weight: 600; }
+  .tl-card { flex: 1; background: var(--bg2); border-radius: var(--radius); padding: 9px 13px; font-size: 12px; font-weight: 500; color: var(--text); }
+
+  /* ── Key/value pairs ── */
+  .kv-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .kv-row:last-child { border: none; }
+  .kv-row .k { color: var(--text2); }
+  .kv-row .v { font-weight: 600; color: var(--text); }
+
+  /* ── Divider ── */
+  .divider { height: 0.5px; background: var(--border); margin: 16px 0; }
+
+  /* ── Weekly cadence ── */
+  .day-row { display: flex; gap: 10px; margin-bottom: 8px; }
+  .day-label { font-size: 12px; font-weight: 600; color: var(--purple); min-width: 76px; }
+  .day-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* ── Referral brief section ── */
+  .brief-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+  .brief-num { width: 22px; height: 22px; border-radius: 50%; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--purple-dark); flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Objection rows ── */
+  details { background: var(--bg2); border-radius: var(--radius); margin-bottom: 6px; overflow: hidden; }
+  details summary { padding: 11px 14px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; font-size: 16px; color: var(--text3); flex-shrink: 0; }
+  details[open] summary::after { content: "−"; }
+  details summary .tag { margin-top: 0; }
+  .obj-answer { padding: 0 14px 12px; font-size: 12px; color: var(--text2); line-height: 1.6; border-top: 0.5px solid var(--border); padding-top: 10px; }
+
+  /* ── Channels ── */
+  .ch-rank { font-size: 11px; font-weight: 600; color: var(--purple); margin-bottom: 3px; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; padding: 32px 0 0; font-size: 11px; color: var(--text3); line-height: 1.8; }
+  .footer a { color: var(--purple); text-decoration: none; }
+
+  /* ── Print ── */
+  @media print {
+    .nav, .ptabs { display: none; }
+    .pg { display: block !important; page-break-before: always; }
+    .pp { display: block !important; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>PHXJAX Fundraising Gameplan</h1>
+        <div class="sub">Phoenix Arts &amp; Innovation District · Jacksonville, FL · Future of Cities</div>
+      </div>
+      <div style="font-size:12px;color:#AFA9EC;text-align:right;line-height:1.6">invest.phxjax.com<br>Q2 2026 Target Close</div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hv">$7M</div><div class="hl">Equity raise</div></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><div class="hv">27%</div><div class="hl">Target net IRR</div></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><div class="hv">1.64×</div><div class="hl">Equity multiple</div></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><div class="hv">2–3 yr</div><div class="hl">Capital recovery</div></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><div class="hv">$500K</div><div class="hl">Min. investment</div></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="nb on" onclick="go(0)">Deal snapshot</button>
+    <button class="nb" onclick="go(1)">120-day plan</button>
+    <button class="nb" onclick="go(2)">LinkedIn system</button>
+    <button class="nb" onclick="go(3)">QR + capture</button>
+    <button class="nb" onclick="go(4)">Referral brief</button>
+    <button class="nb" onclick="go(5)">Nurture emails</button>
+    <button class="nb" onclick="go(6)">Objection handler</button>
+    <button class="nb" onclick="go(7)">Network activation</button>
+  </div>
+
+  <!-- PAGE 0: DEAL SNAPSHOT -->
+  <div class="pg on" id="g0">
+    <div class="g2" style="margin-bottom:10px">
+      <div class="db" style="text-align:left"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">Sponsor</div><div style="font-size:14px;font-weight:600;color:var(--text)">Tony Cho / Future of Cities</div><div style="font-size:12px;color:var(--text2);margin-top:2px">Wynwood + Magic City · 40%+ historic IRR · $2.5B+ transactions</div></div>
+      <div class="db" style="text-align:left"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">Asset</div><div style="font-size:14px;font-weight:600;color:var(--text)">8.3 acres · Jacksonville, FL</div><div style="font-size:12px;color:var(--text2);margin-top:2px">Assembled · Entitled · Income-producing today</div></div>
+    </div>
+    <div class="card ap" style="margin-bottom:8px"><div class="ct">The work is done. The exits are starting.</div><div class="cs">$23.2M deployed. $35.3M NAV — 4.7× equity invested. 116K SF generating NOI. 830 units entitled. Site D JV executed. Sites A+B and C in advanced discussions. Investors step in at the monetization phase — not the risk phase.</div></div>
+    <div class="card at" style="margin-bottom:8px"><div class="ct">Capital back in 2–3 years. Full exit by 2027–2030.</div><div class="cs">Six development parcels targeting $62.5M gross proceeds. 3–5 year hold. Investors see capital returned starting year two — before the full exit sequence completes.</div></div>
+    <div class="card aa" style="margin-bottom:16px"><div class="ct">Tony Cho built Wynwood. Same thesis, better timing.</div><div class="cs">$8B+ of institutional investment arriving in Jacksonville's urban core. Land acquired at $3K/unit now worth $30K/unit — 10× gain already achieved before vertical development begins.</div></div>
+
+    <div class="sl">Monetization timeline</div>
+    <div class="tl-row"><div class="tl-year" style="color:var(--text3)">Today</div><div class="tl-card">116K SF generating NOI. Site D JV executed. Sites A+B, C in advanced discussions.</div></div>
+    <div class="tl-row"><div class="tl-year" style="color:var(--teal)">2027</div><div class="tl-card at">Site D delivers. Sites A+B JV closes. First investor distributions begin.</div></div>
+    <div class="tl-row"><div class="tl-year" style="color:var(--amber)">2028</div><div class="tl-card aa">Site C executes. Break-even projected for $1M investors. $8B pipeline delivering.</div></div>
+    <div class="tl-row"><div class="tl-year" style="color:var(--blue)">2029–30</div><div class="tl-card ab">Sites E &amp; F execute. Full $62.5M proceeds realized. 1.64× equity multiple returned.</div></div>
+
+    <div class="sl">Key terms</div>
+    <div class="g2">
+      <div class="card" style="margin:0">
+        <div class="kv-row"><span class="k">Total equity raise</span><span class="v">$7M</span></div>
+        <div class="kv-row"><span class="k">Min. investment</span><span class="v">$500K</span></div>
+        <div class="kv-row"><span class="k">Preferred return</span><span class="v">6%</span></div>
+        <div class="kv-row"><span class="k">Target net IRR</span><span class="v">27%</span></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="kv-row"><span class="k">Net asset value</span><span class="v">$35.3M</span></div>
+        <div class="kv-row"><span class="k">Gross proceeds target</span><span class="v">$62.5M</span></div>
+        <div class="kv-row"><span class="k">Target hold</span><span class="v">3–5 years</span></div>
+        <div class="kv-row"><span class="k">Target close</span><span class="v">Q2 2026</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: 120-DAY PLAN -->
+  <div class="pg" id="g1">
+    <div class="ptabs">
+      <button class="ptab on" onclick="pt(0)">Days 1–30</button>
+      <button class="ptab" onclick="pt(1)">Days 31–60</button>
+      <button class="ptab" onclick="pt(2)">Days 61–90</button>
+      <button class="ptab" onclick="pt(3)">Days 91–120</button>
+    </div>
+    <div class="pp on" id="pp0">
+      <div class="ph"><div class="pbadge" style="background:var(--purple-light);border-color:#AFA9EC"><div class="d" style="color:var(--purple-dark)">30</div><div class="lb" style="color:var(--purple)">days</div></div><div><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">Activate all channels simultaneously</div><div style="font-size:12px;color:var(--text2)">Brief the full network. Distribute the referral brief. Stand up LinkedIn. Install QR capture. Retool Tony's talk around exits, not tax.</div></div></div>
+      <div class="g3"><div class="db kc"><div class="kv">5</div><div class="kl">Channels briefed</div></div><div class="db kc"><div class="kv">3</div><div class="kl">CEO talks booked</div></div><div class="db kc"><div class="kv">1</div><div class="kl">All systems live</div></div></div>
+      <div class="card ap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Distribute the referral brief to every professional in your network</div><span class="tag tp">This week</span></div><div class="cs">The Referral Brief (see tab 5) is ready. Hand-deliver or email to every CPA, attorney, banker, and wealth manager. Follow up with a 1:1 briefing call within 5 days. Ask specifically: "Do you have 2–3 clients looking for a 3–5 year real estate position with a verifiable track record?"</div></div>
+      <div class="card at"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Retool Tony's talk: Wynwood → Jacksonville → exits in motion now</div><span class="tag tt">CEO / Speaking</span></div><div class="cs">Open with the Wynwood origin story. Pivot: "Same pattern. Different city. The exits are already starting." Close with the 2027–2030 monetization sequence. QR code on the final slide — stays up during all Q&amp;A. Target 5–15 form submissions per talk feeding into the nurture sequence.</div></div>
+      <div class="card ab"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Launch Tony's LinkedIn — first 4 posts are in the LinkedIn tab, ready to publish</div><span class="tag tb">LinkedIn</span></div><div class="cs">Post 1 goes out day 1. Two posts per week from this point forward. Market data Mondays, deal milestones Thursdays. This is your wide-net channel — zero variable cost, compounds every week.</div></div>
+      <div class="card aa"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Deploy QR system — form, auto-email, CRM tagging, nurture sequence all wired up</div><span class="tag ta">Systems</span></div><div class="cs">The nurture sequence (tab 6) is ready to load into HubSpot or Mailchimp. The QR tab walks through the 2-hour technical setup. Do this before Tony's next talk.</div></div>
+      <div class="pbar"><div class="pf" style="width:25%;background:var(--purple-mid)"></div></div>
+    </div>
+    <div class="pp" id="pp1">
+      <div class="ph"><div class="pbadge" style="background:var(--teal-light);border-color:#5DCAA5"><div class="d" style="color:#085041">60</div><div class="lb" style="color:var(--teal)">days</div></div><div><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">Conversations &amp; first close</div><div style="font-size:12px;color:var(--text2)">Convert referrals and QR leads into 1:1 meetings. Close the first investor. Target $1.5M verbal. All channels running simultaneously.</div></div></div>
+      <div class="g3"><div class="db kc"><div class="kv">15</div><div class="kl">Meetings held</div></div><div class="db kc"><div class="kv">$1.5M</div><div class="kl">Verbal target</div></div><div class="db kc"><div class="kv">1</div><div class="kl">Anchor committed</div></div></div>
+      <div class="card ap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Tony sends personal follow-ups within 24 hrs of every talk</div><span class="tag tt">CEO / Speaking</span></div><div class="cs">Short. Personal. References the event. For $500K+ leads: Tony adds a personal note. For everyone else: the nurture sequence runs automatically. Tony's time stays on the highest-tier prospects only.</div></div>
+      <div class="card at"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Run relationship-first meetings — listen before presenting</div><span class="tag tp">Meetings</span></div><div class="cs">First 15 min: their history, hold preferences, what they've passed on. Middle 20 min: Wynwood → Jacksonville → exits timeline. Last 10 min: terms, Q&amp;A. Send the full memo after the meeting — not before. Stories close; spreadsheets confirm.</div></div>
+      <div class="card aa"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Brief professional network weekly — make them feel like partners</div><span class="tag ta">Network</span></div><div class="cs">Update CPAs and wealth managers weekly: "Had three meetings this week, strong interest." Professionals refer deals they feel ownership over. Loop them into outcomes — not just introductions.</div></div>
+      <div class="card ab"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Coordinate channels to hit the same prospect from multiple angles</div><span class="tag tb">Coordination</span></div><div class="cs">Target sequence: (1) hears Tony speak, (2) their CPA mentions PHXJAX a week later, (3) their wealth manager sends the brief. Three trusted voices in two weeks. That's conviction, not pressure.</div></div>
+      <div class="pbar"><div class="pf" style="width:50%;background:var(--teal-mid)"></div></div>
+    </div>
+    <div class="pp" id="pp2">
+      <div class="ph"><div class="pbadge" style="background:var(--amber-light);border-color:#EF9F27"><div class="d" style="color:#633806">90</div><div class="lb" style="color:var(--amber)">days</div></div><div><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">Diligence sprint &amp; mid-raise momentum</div><div style="font-size:12px;color:var(--text2)">Run 3–4 investors through diligence simultaneously. Deploy first-close social proof. Target $4M committed.</div></div></div>
+      <div class="g3"><div class="db kc"><div class="kv">$4M</div><div class="kl">Committed target</div></div><div class="db kc"><div class="kv">3–4</div><div class="kl">In active diligence</div></div><div class="db kc"><div class="kv">2–3</div><div class="kl">Signed commitments</div></div></div>
+      <div class="card ap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Open the data room — have everything ready before they ask</div><span class="tag tp">Diligence</span></div><div class="cs">Title docs, appraisal, Phase 1 environmental, lease abstracts for all 6 buildings, pro forma with unlocked assumptions, all JV term sheets (especially Site D executed agreement), site plan, sponsor track record with references, city incentive agreements.</div></div>
+      <div class="card at"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Deploy first-close momentum the day it happens — across every channel</div><span class="tag tt">Momentum</span></div><div class="cs">Email the full pipeline. Brief all professional referral partners. Tony opens his next talk: "We're 30% subscribed." Update the nurture Email 2 variable to the real number. LinkedIn post: "PHXJAX is 30% subscribed — Q2 close is firm."</div></div>
+      <div class="card aa"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Offer Jacksonville site visits to every serious prospect</div><span class="tag ta">In-person</span></div><div class="cs">Walk the 8.3 acres, Emerald Station, the Emerald Trail corridor, the competitive set. Point to the Four Seasons site, the stadium, the Related Group parcel. Investors who visit convert at 2–3× those who don't.</div></div>
+      <div class="pbar"><div class="pf" style="width:75%;background:var(--amber-mid)"></div></div>
+    </div>
+    <div class="pp" id="pp3">
+      <div class="ph"><div class="pbadge" style="background:var(--blue-light);border-color:#85B7EB"><div class="d" style="color:#0C447C">120</div><div class="lb" style="color:var(--blue)">days</div></div><div><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">Final close &amp; IR foundation</div><div style="font-size:12px;color:var(--text2)">Close $7M by Q2 2026. Launch investor relations. Every investor and channel partner becomes the foundation for your next raise.</div></div></div>
+      <div class="g3"><div class="db kc"><div class="kv">$7M</div><div class="kl">Raise closed</div></div><div class="db kc"><div class="kv">Q2 2026</div><div class="kl">Target close</div></div><div class="db kc"><div class="kv">1</div><div class="kl">IR system live</div></div></div>
+      <div class="card ap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Tony closes remaining investors by phone — personally, before Q2</div><span class="tag tp">Closing</span></div><div class="cs">No email closings. Tony calls each remaining prospect. Acknowledge their diligence. Direct: "Sites A+B JV discussions are advancing and we close Q2 — are you in a position to move forward?" The close is one sentence. What follows is listening.</div></div>
+      <div class="card at"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Launch quarterly IR reporting from day one post-close</div><span class="tag tb">IR</span></div><div class="cs">Quarterly: NOI by building, JV site status, distributions paid, capex, Jacksonville market commentary. Investors who get proactive reporting refer others and reinvest. Treat IR like a product.</div></div>
+      <div class="card aa"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Close announcement to everyone — especially those who didn't invest</div><span class="tag tt">Announcement</span></div><div class="cs">"PHXJAX is fully subscribed." Send to all investors, every referral partner, all LinkedIn followers, all QR form submissions. Every person who missed this raise is your first call for the next one.</div></div>
+      <div class="pbar"><div class="pf" style="width:100%;background:var(--blue-mid)"></div></div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: LINKEDIN -->
+  <div class="pg" id="g2">
+    <div class="card ap" style="margin-bottom:14px"><div class="ct">The LinkedIn shift: stop branding, start converting</div><div class="cs">Instagram builds an audience. LinkedIn builds a funnel. 2 posts per week from Tony's profile. 10 new targeted connections per week. DM anyone who engages with a post. The goal isn't likes — it's qualified prospects clicking to invest.phxjax.com or DMing Tony directly.</div></div>
+    <div class="g2" style="margin-bottom:14px">
+      <div class="card" style="margin:0"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Monday post</div><div class="ct" style="font-size:13px">Market insight or data</div><div class="cs">Jacksonville stat, Sun Belt trend, supply/demand data. Educate. No pitch.</div><span class="tag tb">Awareness</span></div>
+      <div class="card" style="margin:0"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Thursday post</div><div class="ct" style="font-size:13px">Deal milestone or story</div><div class="cs">PHXJAX progress, Wynwood parallel, investor Q answered publicly.</div><span class="tag tp">Pipeline</span></div>
+    </div>
+    <div class="sl">4 posts — ready to publish today (click "Copy" to grab any post)</div>
+
+    <div class="li">
+      <div class="li-hd"><div class="av">TC</div><div><div class="lnm">Tony Cho</div><div class="lmt">Founder, Future of Cities · Jacksonville, FL</div></div></div>
+      <div class="lb2" id="post1">I bought into Wynwood before anyone called it Wynwood.
+
+Warehouses. Empty streets. A hunch that cities reward those who show up before the institutions do.
+
+The exits from that bet delivered 40%+ IRR.
+
+Jacksonville right now has the same energy Miami had in 2004.
+
+$8B+ of institutional capital is already committed to the urban core.
+
+A $1.4B stadium. A Four Seasons. The University of Florida downtown. The Related Group. 16,000 new residents in a single year.
+
+We spent five years assembling 8.3 acres at the center of it — before the repricing started.
+
+The land is titled. The buildings are live. The JVs are in motion.
+
+The exits begin in 2027. This is not a development bet. The work is done.</div>
+      <div class="lft"><span>Origin story + monetization hook</span><span>Thursday</span><button class="copy-btn" onclick="copyPost('post1',this)">Copy</button></div>
+    </div>
+
+    <div class="li">
+      <div class="li-hd"><div class="av">TC</div><div><div class="lnm">Tony Cho</div><div class="lmt">Founder, Future of Cities · Jacksonville, FL</div></div></div>
+      <div class="lb2" id="post2">A stat that should matter to every real estate investor:
+
+Jacksonville absorbed 5,200 housing units last year. Only 2,700 were under construction.
+
+Nearly 2:1 demand over supply — in one of the fastest-growing metros in America.
+
+At PHXJAX we have 830 entitled residential units across six development sites. Land we acquired at $3,000/unit is now worth $30,000/unit.
+
+That's a 10× gain in effective land value — already achieved, before a single vertical building breaks ground.
+
+The monetization is underway. Site D JV is executed. Sites A+B are in active discussions.</div>
+      <div class="lft"><span>Market data + proof point</span><span>Monday</span><button class="copy-btn" onclick="copyPost('post2',this)">Copy</button></div>
+    </div>
+
+    <div class="li">
+      <div class="li-hd"><div class="av">TC</div><div><div class="lnm">Tony Cho</div><div class="lmt">Founder, Future of Cities · Jacksonville, FL</div></div></div>
+      <div class="lb2" id="post3">Most real estate deals ask investors to fund the risk.
+
+At PHXJAX, that chapter is closed.
+
+5 years. $23.2M deployed. 8.3 acres 100% owned. 830 units entitled. $5.5M in city incentives. 116,000 SF of buildings generating income today.
+
+Net asset value: $35.3M — 4.7× the equity invested before this raise opens.
+
+The investors stepping in now are stepping in at the monetization phase.
+
+Capital returned starting 2027. Full exit sequence 2027–2030.
+
+The heavy lift created the opportunity. The raise captures it.</div>
+      <div class="lft"><span>De-risking + entry point</span><span>Thursday</span><button class="copy-btn" onclick="copyPost('post3',this)">Copy</button></div>
+    </div>
+
+    <div class="li">
+      <div class="li-hd"><div class="av">TC</div><div><div class="lnm">Tony Cho</div><div class="lmt">Founder, Future of Cities · Jacksonville, FL</div></div></div>
+      <div class="lb2" id="post4">People ask me: "Why Jacksonville? Why now?"
+
+Here's the honest answer.
+
+When I was building Wynwood, nobody asked "why Miami." It felt obvious in retrospect — after the exits proved it.
+
+Jacksonville today:
+→ #2 hottest job market in the US (WSJ 2024)
+→ 4 Fortune 500 headquarters
+→ $147M federal Emerald Trail grant running through our district
+→ 0% state income tax driving accelerating in-migration
+→ 15–30% lower cost of living than Miami, Orlando, or Atlanta
+
+The city has the fundamentals. The capital is arriving. The repricing hasn't fully happened yet.
+
+PHXJAX closes Q2 2026. invest.phxjax.com</div>
+      <div class="lft"><span>Jacksonville thesis + soft CTA</span><span>Monday</span><button class="copy-btn" onclick="copyPost('post4',this)">Copy</button></div>
+    </div>
+
+    <div class="sl">Proactive outreach — 10 new connections per week</div>
+    <div class="card">
+      <div class="cs" style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:8px"><span style="font-weight:600;color:var(--purple);font-size:12px;min-width:76px">Titles</span><span style="font-size:12px;color:var(--text2)">"Family office" · "Private wealth advisor" · "CIO" · "Managing director" · "CPA" · "Wealth manager"</span></div>
+        <div style="display:flex;gap:8px"><span style="font-weight:600;color:var(--purple);font-size:12px;min-width:76px">Locations</span><span style="font-size:12px;color:var(--text2)">Jacksonville · Miami · Tampa · Atlanta · Dallas · New York</span></div>
+        <div style="display:flex;gap:8px"><span style="font-weight:600;color:var(--purple);font-size:12px;min-width:76px">Connect note</span><span style="font-size:12px;color:var(--text2)">"Following your work on Sun Belt real estate — love to connect." Never pitch in the request. Pitch after they engage with a post.</span></div>
+        <div style="display:flex;gap:8px"><span style="font-weight:600;color:var(--purple);font-size:12px;min-width:76px">DM trigger</span><span style="font-size:12px;color:var(--text2)">If they like or comment: "Happy to share the full deal overview if Jacksonville is on your radar." One sentence. Link to invest.phxjax.com.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: QR + CAPTURE -->
+  <div class="pg" id="g3">
+    <div class="sl">The capture system — 6 steps, mostly automated</div>
+    <div class="sr"><div><div class="sn">1</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">Tony speaks — QR on final slide, stays up during Q&amp;A</div><div class="cs">One verbal mention: "Scan for the full overview — I'll send it directly." Most scans happen during Q&amp;A when people are already on their phones.</div><span class="tag tt">Live</span></div></div>
+    <div class="sr"><div><div class="sn">2</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">Prospect lands on mobile form — 30 seconds to complete</div><div class="cs">Name · Email · Phone · Investment capacity: $500K–$1M / $1M–$2M / $2M+. The capacity field does Tony's qualification work automatically.</div><span class="tag tp">Capture</span></div></div>
+    <div class="sr"><div><div class="sn">3</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">Auto-email from Tony hits inbox in 60 seconds</div><div class="cs">While they're still in the room. References the event. One CTA: book a 30-minute call. Speed is the conversion advantage.</div><span class="tag ta">Automated</span></div></div>
+    <div class="sr"><div><div class="sn">4</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">CRM tags lead by investment tier automatically</div><div class="cs">$500K+ → "Priority" queue. Tony reviews within 24 hrs and adds personal note to top 3–5. Below $500K → automated nurture. Zero manual sorting.</div><span class="tag ta">Automated</span></div></div>
+    <div class="sr"><div><div class="sn">5</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">Non-bookers → 3-email nurture over 21 days (see Nurture Emails tab)</div><div class="cs">Day 3: Jacksonville education. Day 10: raise progress + urgency. Day 21: personal note from Tony. Zero manual work after setup.</div><span class="tag ta">Automated</span></div></div>
+    <div class="sr"><div><div class="sn">6</div><div class="sl2"></div></div><div class="card" style="flex:1;margin:0"><div class="ct">Bookers receive deal memo 24 hrs before their call</div><div class="cs">Tony arrives informed. The call is a conversation about exits, not a first introduction.</div><span class="tag tb">Tony closes</span></div></div>
+
+    <div class="sl">Auto-confirmation email (instant — sent on form submit)</div>
+    <div class="email-card">
+      <div class="em-meta"><strong>From:</strong> Tony Cho &lt;tony@focities.com&gt;<br><strong>Subject:</strong> PHXJAX — the exits timeline + your overview</div>
+      <div class="em-div"></div>
+      <div class="em-body">{First Name},
+
+Good to have you at [event] today — here's the overview I mentioned.
+<div class="em-hl">PHXJAX is a fully assembled 8.3-acre district in Jacksonville. $23.2M deployed. 830 units entitled. Buildings generating income today. Raising $7M to fund the monetization phase — JV exits and parcel sales targeting $62.5M by 2030. Capital returned starting 2027. Target net IRR: 27%. Minimum: $500K.</div>
+If the timeline and returns are relevant to you, the best next step is a 30-minute call.
+<div class="em-cta">calendly.com/tonyphxjax →</div>— Tony
+tony@focities.com · 305.790.2846 · invest.phxjax.com</div>
+    </div>
+
+    <div class="sl">Technical setup — 2 hours total</div>
+    <div class="g2">
+      <div class="card" style="margin:0"><div class="ct">Form + CRM</div><div class="cs">Tally.so or Typeform → Zapier → HubSpot or Airtable. Investment tier auto-tags on submit. Free tiers cover the volume.</div></div>
+      <div class="card" style="margin:0"><div class="ct">Auto-email + nurture</div><div class="cs">Zapier fires Gmail or SendGrid on form submit. Nurture sequence loads into HubSpot/Mailchimp. UTM per event for source tracking.</div></div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: REFERRAL BRIEF -->
+  <div class="pg" id="g4">
+    <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:14px">
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--purple-dark);flex-shrink:0">BR</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">PHXJAX Referral Brief</div><div style="font-size:12px;color:var(--text2);margin-top:2px">Formatted 1-page document for CPAs, attorneys &amp; wealth managers</div></div>
+      <button class="nb" style="font-size:12px;padding:7px 14px" onclick="dlDoc('brief')">Download .docx</button>
+    </div>
+    <div class="card ap" style="margin-bottom:14px"><div class="ct">The referral brief — what it is and who gets it</div><div class="cs">A single page designed to be forwarded by a CPA, attorney, banker, or wealth manager to a qualified client with one sentence: "This might be worth 30 minutes of your time." Leads with the monetization story, not tax. The formatted Word document is included in the download package.</div></div>
+
+    <div class="sl">What the brief covers</div>
+    <div class="brief-step"><div class="brief-num">1</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">The opportunity in plain language</div><div class="cs">One paragraph: what PHXJAX is, what's already done, what investors are buying into. Written to be forwarded, not read by the sponsor.</div></div></div>
+    <div class="brief-step"><div class="brief-num">2</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">Investment terms at a glance</div><div class="cs">$7M raise · 27% net IRR · 1.64× multiple · $500K minimum · Q2 2026 close — all visible without reading a deck.</div></div></div>
+    <div class="brief-step"><div class="brief-num">3</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">Key facts table</div><div class="cs">$23.2M deployed, $35.3M NAV, 116K SF live, 830 units entitled, $5.5M incentives — everything a sophisticated investor needs for a first filter.</div></div></div>
+    <div class="brief-step"><div class="brief-num">4</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">Why now — 4 bullets</div><div class="cs">Jacksonville fundamentals, institutional pipeline, land value gain already achieved, Q2 close window. Short enough to scan, specific enough to be credible.</div></div></div>
+    <div class="brief-step"><div class="brief-num">5</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">Monetization timeline table</div><div class="cs">Today → 2027 → 2028 → 2029–30. Investors see exactly when their capital comes back. Removes the "when do I get paid?" objection before it's raised.</div></div></div>
+    <div class="brief-step"><div class="brief-num">6</div><div class="card" style="flex:1;margin:0"><div class="ct" style="font-size:13px">Referral intro language for the advisor</div><div class="cs">"The simplest referral: 'I came across a Jacksonville deal led by the founder of Wynwood that might be worth 30 minutes of your time.'" Removes all friction from the referral act.</div></div></div>
+
+    <div class="sl" style="margin-top:18px">Briefing script — what to say on the follow-up call</div>
+    <div class="email-card">
+      <div class="em-div" style="margin-bottom:10px"></div>
+      <div class="em-body">"[Name], I wanted to walk you through a deal we're working on — it's a Jacksonville mixed-use district led by Tony Cho, the founder of Wynwood. The hard work is done — 8.3 acres assembled, 830 units entitled, buildings generating income today. We're raising $7M to fund the exits phase. Target 27% net IRR, capital back in 2–3 years.
+
+The reason I'm calling you specifically: do you have 2–3 clients who are looking for a 3–5 year real estate position with a sponsor track record they can actually verify? If so, I'd love to send you the one-page overview to share."</div>
+    </div>
+    <div class="card at"><div class="ct">The briefing call is more important than the document</div><div class="cs">Email the brief to open the door. Call to walk through it. Ask the specific question. Close the loop after every introduction whether it converts or not — that loop is what produces the next referral.</div></div>
+  </div>
+
+  <!-- PAGE 5: NURTURE EMAILS -->
+  <div class="pg" id="g5">
+    <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:14px">
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--teal);flex-shrink:0">NE</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">PHXJAX Nurture Email Sequence</div><div style="font-size:12px;color:var(--text2);margin-top:2px">3-email automated sequence with setup notes · Word document</div></div>
+      <button class="nb" style="font-size:12px;padding:7px 14px" onclick="dlDoc('nurture')">Download .docx</button>
+    </div>
+    <div class="card ap" style="margin-bottom:14px"><div class="ct">3 emails · 21 days · fully automated</div><div class="cs">These trigger automatically for anyone who submits the QR form but doesn't book a call within 48 hours. Each email has one job. None tries to do everything. Load directly into HubSpot or Mailchimp as a 3-step workflow.</div></div>
+
+    <div class="g3" style="margin-bottom:14px">
+      <div class="db kc"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">Email 1</div><div class="kv" style="font-size:14px">Day 3</div><div class="kl">Educate — no pitch</div></div>
+      <div class="db kc"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">Email 2</div><div class="kv" style="font-size:14px">Day 10</div><div class="kl">Urgency — real progress</div></div>
+      <div class="db kc"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">Email 3</div><div class="kv" style="font-size:14px">Day 21</div><div class="kl">Personal close — Tony direct</div></div>
+    </div>
+
+    <div class="sl">Email 1 — Day 3</div>
+    <div class="email-card">
+      <div style="margin-bottom:8px"><span class="badge-day" style="background:var(--teal-light);color:var(--teal)">Day 3 · Subject: What's actually happening in Jacksonville right now</span></div>
+      <div class="em-body">{First Name},
+
+You scanned at [event] a few days ago — wanted to follow up with something concrete rather than just a pitch.
+
+The Jacksonville story in four data points:
+→ #2 hottest job market in the US (WSJ 2024) — ahead of Austin, Raleigh, and Nashville
+→ 5,200 units absorbed vs. 2,700 under construction — nearly 2:1 demand over supply
+→ $8B+ institutional investment in the urban core: $1.4B stadium, Four Seasons, UF downtown, Related Group
+→ 16,000 new residents in one year, drawn by 0% state income tax
+
+This is the same pattern I saw in Wynwood before it became one of the most valuable urban corridors in the Southeast.
+
+PHXJAX sits at the center of this. Buildings generating income today. JV exits beginning 2027. 27% target net IRR. $500K minimum.
+<div class="em-cta">Book a 30-minute call — calendly.com/tonyphxjax</div>— Tony</div>
+    </div>
+
+    <div class="sl">Email 2 — Day 10</div>
+    <div class="email-card">
+      <div style="margin-bottom:8px"><span class="badge-day" style="background:var(--amber-light);color:var(--amber)">Day 10 · Subject: PHXJAX update — [X]% subscribed</span></div>
+      <div class="em-body">{First Name},
+
+Quick update since [event].
+
+We're now [X]% subscribed. Q2 2026 close is firm.
+
+Recent progress:
+→ Site D affordable housing JV with Blue Sky executing — $2.16M land valuation locked
+→ Sites A+B (280 units) in advanced JV discussions, target 2027 delivery
+→ Emerald Station and Legacy Building fully operational and leasing
+
+For a $1M investment the model projects:
+→ $520K distribution in 2027
+→ Break-even in 2028 ($1.19M returned)
+→ Full exit by 2030 at $1.64M total
+<div class="em-cta">Book a call this week — calendly.com/tonyphxjax</div>— Tony</div>
+    </div>
+
+    <div class="sl">Email 3 — Day 21</div>
+    <div class="email-card">
+      <div style="margin-bottom:8px"><span class="badge-day" style="background:var(--purple-light);color:var(--purple-dark)">Day 21 · Subject: Checking in personally</span></div>
+      <div class="em-body">{First Name},
+
+I know you've gotten a couple of emails about PHXJAX since [event] — wanted to reach out directly before the allocation closes.
+
+We're in the final stretch. Q2 2026 close is firm. Once it's fully subscribed, that's it.
+
+If you've been thinking about it but haven't pulled the trigger, I'd love to understand what questions you still have. Happy to get on a call this week — deal structure, exit timeline, Jacksonville market, whatever would help.
+
+And if the timing isn't right, no problem — happy to keep you on the list for our next opportunity.
+<div class="em-cta">Reply here or book a call — calendly.com/tonyphxjax</div>— Tony
+tony@focities.com · 305.790.2846 · invest.phxjax.com</div>
+    </div>
+
+    <div class="card at"><div class="ct">Critical: suppression rule</div><div class="cs">Stop the sequence immediately if the prospect books a call, replies to any email, or unsubscribes. Never send Email 3 to someone already in active conversation with Tony. Configure this in Zapier before launching.</div></div>
+    <div class="card aa" style="margin-top:6px"><div class="ct">Email 2 variable: update weekly</div><div class="cs">The [X]% subscribed field in Email 2 must reflect real current data. Set a weekly calendar reminder to update it. Stale numbers destroy urgency — the whole point of this email is real momentum, not manufactured pressure.</div></div>
+  </div>
+
+  <!-- PAGE 6: OBJECTION HANDLER -->
+  <div class="pg" id="g6">
+    <div class="card ap" style="margin-bottom:14px"><div class="ct">Read before every investor meeting</div><div class="cs">These are the 8 objections you will hear on every PHXJAX call. Every answer is grounded in real deal data. Click any row to expand the full response.</div></div>
+
+    <details><summary><span>"I don't know Jacksonville well enough."</span><span class="tag ta">Market</span></summary><div class="obj-answer">"Neither did anyone in Wynwood before Tony entered it. The institutions who do their homework are already moving in — $8B+ committed to the urban core. Their capital is the validation. You don't need to know Jacksonville; you need to trust the pattern and the sponsor who has already run it once successfully."</div></details>
+    <details><summary><span>"27% IRR sounds aggressive."</span><span class="tag tp">Returns</span></summary><div class="obj-answer">"Tony's prior district-scale deals delivered 40%+ historic IRR. The 27% is our net target grounded in the $62.5M proceeds model across six sites. More importantly — the NAV is already $35.3M on $7.5M of prior equity. A meaningful portion of the upside is already crystallized in the land value before this raise even closes."</div></details>
+    <details><summary><span>"What if development timelines slip?"</span><span class="tag ta">Execution</span></summary><div class="obj-answer">"The key protection is current income. 116,000 SF of buildings generating NOI today — the land isn't idle waiting for a catalyst. Even if vertical timelines slip a year, the portfolio produces cash flow and land values are supported by the $8B pipeline surrounding it. Site D has an executed JV agreement — the exit machine is already running."</div></details>
+    <details><summary><span>"I want to see the track record."</span><span class="tag tb">Sponsor</span></summary><div class="obj-answer">"We have a full sponsor package covering Wynwood Arts District and Magic City Innovation District — timeline, returns, and investor references. Tony is a founding board member of the Wynwood BID and a published author on urban district development. The track record is public and independently verifiable, not just numbers in a pitch deck."</div></details>
+    <details><summary><span>"$500K is more than I typically allocate."</span><span class="tag tp">Check size</span></summary><div class="obj-answer">"Fair point. Consider what you're buying at $500K — a proportional share of a $35.3M NAV asset that's been de-risked through 5 years of assembly and entitlement work. The question isn't whether $500K is a large number in isolation; it's whether the risk-adjusted return on a deal where the heavy lifting is done justifies the concentration."</div></details>
+    <details><summary><span>"Why raise before full lease-up?"</span><span class="tag ta">Timing</span></summary><div class="obj-answer">"The capital funds the monetization — JV structures, bridge debt paydowns, remaining building activations. Waiting for full lease-up means missing the entry price that makes 27% IRR possible. Jacksonville land is repricing in real time. The window is real and it won't persist once the JV exits begin validating the upside."</div></details>
+    <details><summary><span>"How liquid is this investment?"</span><span class="tag tb">Liquidity</span></summary><div class="obj-answer">"This is a private placement — no public market for the units. That said, the capital return profile is designed for early distributions: capital recovery projected within 2–3 years from the first parcel exits. If a hard exit before 2027 is a firm requirement, this deal may not fit your constraints — and we'd rather say that clearly than have a mismatched investor."</div></details>
+    <details><summary><span>"I'd rather wait until a site has sold first."</span><span class="tag tc">Risk</span></summary><div class="obj-answer">"By the time the first parcel closes, the allocation will be gone and the entry price will reflect the validated upside. Site D already has an executed JV agreement — the exit machine is already moving. The investors who wait for proof of concept pay the premium for it. The current entry price reflects the risk-taking that's already been done."</div></details>
+  </div>
+
+  <!-- PAGE 7: NETWORK ACTIVATION -->
+  <div class="pg" id="g7">
+    <div class="sl">5 channels — ranked by conversion probability</div>
+
+    <div class="card ap" style="margin-bottom:8px"><div class="ch-rank">#1 — highest conversion</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">CPAs &amp; attorneys — distribute the referral brief today</div><span class="tag tp">This week</span></div><div class="cs">Hand the referral brief to every CPA and attorney in your network this week. Follow up with a 1:1 call within 5 days. Ask: "Do you have 2–3 clients looking for a 3–5 year real estate position with a verifiable track record?" Close the loop after every introduction whether it converts or not — that loop produces the next referral.</div></div>
+
+    <div class="card at" style="margin-bottom:8px"><div class="ch-rank" style="color:var(--teal)">#2 — highest volume</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">CEO speaking platform — QR system now captures everything</div><span class="tag tt">Warm audience</span></div><div class="cs">With the QR system live, Tony's only manual work after each talk is reviewing the $500K+ priority queue within 24 hours. Everything else is automated. Target 3+ talks per month, 5–15 form submissions per event.</div></div>
+
+    <div class="card aa" style="margin-bottom:8px"><div class="ch-rank" style="color:var(--amber)">#3 — largest check sizes</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Wealth managers &amp; private bankers</div><span class="tag ta">Gated</span></div><div class="cs">RIAs managing $50M+ AUM allocate 5–10% to alternatives. Give them the referral brief and update them weekly on raise progress. Professionals refer deals they feel ownership over.</div></div>
+
+    <div class="card ab" style="margin-bottom:8px"><div class="ch-rank" style="color:var(--blue)">#4 — large net, zero variable cost</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">LinkedIn — inbound investor funnel</div><span class="tag tb">Scalable</span></div><div class="cs">2 posts/week (all ready in the LinkedIn tab). 10 new targeted connections per week. DM anyone who engages: "Happy to share the full overview if Jacksonville is on your radar." One sentence. Link to invest.phxjax.com.</div></div>
+
+    <div class="card" style="margin-bottom:14px"><div class="ch-rank" style="color:var(--text3)">#5 — fastest close rate</div><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div class="ct">Investor referrals from committed capital</div><span class="tag tc">Peer trust</span></div><div class="cs">Ask every committed investor within 2 weeks of close: "Is there anyone in your network who should see this before Q2?" Peer-referred capital closes fastest — Tony doesn't have to establish credibility, the referring investor already did it.</div></div>
+
+    <div class="divider"></div>
+    <div class="sl">Weekly execution cadence</div>
+    <div class="card">
+      <div class="day-row"><span class="day-label">Monday</span><span class="day-text">Publish LinkedIn market data post. Review QR priority leads from weekend events. Tony adds personal notes to top $500K+ submissions.</span></div>
+      <div class="day-row"><span class="day-label">Tuesday</span><span class="day-text">Tony calls all booked investor meetings from the previous week's talks. Brief wealth managers and bankers on raise progress update.</span></div>
+      <div class="day-row"><span class="day-label">Wednesday</span><span class="day-text">1:1 investor meetings. Close the loop with every CPA/attorney who made an introduction — outcome, next step. This loop earns the second referral.</span></div>
+      <div class="day-row"><span class="day-label">Thursday</span><span class="day-text">Publish LinkedIn deal milestone post. Tony connects with 10 new targeted profiles. All pending diligence requests answered same day.</span></div>
+      <div class="day-row" style="margin-bottom:0"><span class="day-label">Friday</span><span class="day-text">Pipeline review: who moved forward, who needs follow-up, which referral sources need a progress update. Prep for any weekend or Monday events.</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>PHXJAX — Phoenix Arts &amp; Innovation District · Jacksonville, Florida</div>
+    <div><a href="https://invest.phxjax.com" target="_blank">invest.phxjax.com</a> · Michael Weil: mweil@focities.com · 305.790.2846</div>
+    <div style="margin-top:8px;color:var(--text3);font-size:10px;max-width:600px;margin-left:auto;margin-right:auto">This document is for internal use and distribution to accredited investors only. Not an offer to sell securities. All financial projections are forward-looking. Consult legal counsel before distribution. © 2026 Future of Cities / PHXJAX.</div>
+  </div>
+</div>
+
+<script>
+function go(i){
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.nb').forEach((b,j)=>b.classList.toggle('on',j===i));
+}
+function pt(i){
+  document.querySelectorAll('.pp').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.ptab').forEach((b,j)=>b.classList.toggle('on',j===i));
+}
+function copyPost(id, btn) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
+<script>
+(function(){
+  var D={
+    brief:{b64:'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',name:'PHXJAX_Referral_Brief.docx'},
+    nurture:{b64:'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',name:'PHXJAX_Nurture_Sequence.docx'}
+  };
+  window.dlDoc=function(k){
+    var d=D[k],bin=atob(d.b64),bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    var blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=d.name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);document.body.removeChild(a);},100);
+  };
+})();
+</script>
+</body>
+</html>
